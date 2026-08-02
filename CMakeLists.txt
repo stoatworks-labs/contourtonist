@@ -113,6 +113,12 @@ target_compile_definitions(Contourtonist
         JUCE_VST3_CAN_REPLACE_VST2=0
         JUCE_DISPLAY_SPLASH_SCREEN=0
         DIAG_GIT_REV="${CONTOURTONIST_GIT_REV}"
+        # MSVC's <cmath> only declares M_PI when this is defined, and it has to be
+        # defined before the first include of it — which Biquad.h does transitively,
+        # so a #define at the top of the two .cpp files that use M_PI is too late.
+        # Biquad.cpp and Weighting.cpp are the users; the Windows build fails to
+        # compile without this.
+        $<$<CXX_COMPILER_ID:MSVC>:_USE_MATH_DEFINES>
 )
 
 target_link_libraries(Contourtonist
