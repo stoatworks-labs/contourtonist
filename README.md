@@ -17,6 +17,11 @@ microphone, or from an SPL meter's live output — and applies the EQ curve that
 tonal balance the system was tuned for as the level moves. When a noise limit pulls the
 show down 8 dB, the bass does not leave with it.
 
+![The Contourtonist standalone tracking a room 12 dB below its reference level: the
+measured level, the loudness level it maps to, and the resulting compensation curve
+rising to +6.35 dB at 20 Hz and passing through exactly 0 dB at 1
+kHz](docs/screenshots/tracking.png)
+
 ## The idea
 
 A mix balanced at 100 dB and reproduced at 88 dB has not simply got quieter. Human hearing
@@ -37,6 +42,18 @@ and the test suite pins it: this is a system EQ, not a slow automatic fader.
 
 For a 100 dB reference reproduced at 85 dB, the correction is +7.9 dB at 20 Hz, +4.7 dB at
 100 Hz, 0 dB at 1 kHz, −0.5 dB at 4 kHz and +2.5 dB at 12.5 kHz.
+
+The further the room falls below the reference, the more there is to put back. At 78 dB
+against the same 100 dB reference the curve reaches its 12 dB ceiling:
+
+![The same window with the room 22 dB down, the curve now reaching 11.10 dB at 20 Hz and
+approaching the configured gain ceiling](docs/screenshots/deep-correction.png)
+
+And when no level is arriving it says so, holds the curve flat, and does not invent a
+measurement:
+
+![The window with no level arriving: the level reads dashes, the status line reports zero
+packets, and the curve is flat](docs/screenshots/no-level.png)
 
 ## Status
 

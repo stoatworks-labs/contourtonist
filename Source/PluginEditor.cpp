@@ -6,7 +6,21 @@ namespace contourtonist
 namespace
 {
 constexpr int windowWidth  = 720;
-constexpr int windowHeight = 560;
+constexpr int windowHeight = 570;
+
+/** Height of the header block, which paint() and resized() must agree on.
+
+    The rows below add up to exactly this. They used to add up to more, and the overflow
+    landed on the warning line — the one piece of text in the window that exists to be
+    read, clipped through the descenders. Keep the arithmetic here rather than as two
+    magic numbers in two functions. */
+constexpr int titleRowHeight   = 26;
+constexpr int measuredHeight   = 32;
+constexpr int phonHeight       = 18;
+constexpr int statusHeight     = 16;
+constexpr int warningHeight    = 18;
+constexpr int headerHeight     = titleRowHeight + measuredHeight + phonHeight
+                               + statusHeight + warningHeight;
 
 const juce::Colour background { 0xff0d0f12 };
 const juce::Colour panel      { 0xff14161a };
@@ -273,7 +287,12 @@ void ContourtonistEditor::timerCallback()
         warning = juce::String (d.malformedCount)
                 + " datagrams could not be parsed - something is talking to this port "
                   "that is not speaking the protocol.";
-    else if (d.extrapolated)
+    else if (d.extrapolated && d.curve.maxAbsGainDb() > 0.05)
+        // Only when the curve is actually doing something. The reference level alone can
+        // sit above 90 phon and set the extrapolated flag while the room is at the
+        // reference and the curve is dead flat — warning that a flat curve rests on
+        // extrapolation is true in the narrowest sense and misleading in every useful
+        // one, and a warning that is usually noise stops being read.
         warning = "Levels are outside the range ISO 226:2003 validates (20-90 phon). "
                   "The curve is extrapolated.";
 
@@ -289,7 +308,7 @@ void ContourtonistEditor::paint (juce::Graphics& g)
     g.fillAll (background);
 
     auto bounds = getLocalBounds().reduced (12);
-    bounds.removeFromTop (108);
+    bounds.removeFromTop (headerHeight + 8);
 
     g.setColour (panel);
     g.fillRoundedRectangle (bounds.removeFromBottom (208).toFloat(), 5.0f);
@@ -300,16 +319,16 @@ void ContourtonistEditor::resized()
     auto bounds = getLocalBounds().reduced (12);
 
     // --- Header ------------------------------------------------------------------------
-    auto header = bounds.removeFromTop (100);
+    auto header = bounds.removeFromTop (headerHeight);
 
-    auto titleRow = header.removeFromTop (26);
+    auto titleRow = header.removeFromTop (titleRowHeight);
     title.setBounds (titleRow.removeFromLeft (200));
     fitLabel.setBounds (titleRow.removeFromRight (140));
 
-    measuredLabel.setBounds (header.removeFromTop (32));
-    phonLabel.setBounds (header.removeFromTop (18));
-    statusLine.setBounds (header.removeFromTop (16));
-    warningLabel.setBounds (header.removeFromTop (16));
+    measuredLabel.setBounds (header.removeFromTop (measuredHeight));
+    phonLabel.setBounds (header.removeFromTop (phonHeight));
+    statusLine.setBounds (header.removeFromTop (statusHeight));
+    warningLabel.setBounds (header.removeFromTop (warningHeight));
 
     bounds.removeFromTop (8);
 

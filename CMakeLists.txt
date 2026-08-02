@@ -99,6 +99,13 @@ target_sources(Contourtonist
         Source/GUI/CurveDisplay.cpp
 )
 
+# The standalone target only: a custom JUCEApplication that declines to open an audio
+# input by default. See Source/StandaloneApp.cpp for why that matters.
+if(TARGET Contourtonist_Standalone)
+    target_sources(Contourtonist_Standalone PRIVATE Source/StandaloneApp.cpp)
+    target_compile_definitions(Contourtonist_Standalone PRIVATE JUCE_USE_CUSTOM_PLUGIN_STANDALONE_APP=1)
+endif()
+
 target_compile_definitions(Contourtonist
     PUBLIC
         JUCE_WEB_BROWSER=0
