@@ -54,6 +54,14 @@ ContourtonistEditor::ContourtonistEditor (ContourtonistProcessor& p)
     setResizable (true, true);
     setResizeLimits (windowWidth, windowHeight, 2560, 1600);
 
+    addAndMakeVisible (aboutButton);
+    aboutButton.setTooltip ("About Contourtonist");
+    aboutButton.onClick = [this] { aboutPanel.setVisible (true); };
+
+    // Hidden until asked for, and on top of everything when it is shown.
+    addChildComponent (aboutPanel);
+    aboutPanel.setAlwaysOnTop (true);
+
     setSize (windowWidth, windowHeight);
     startTimerHz (20);
 }
@@ -325,6 +333,8 @@ void ContourtonistEditor::paint (juce::Graphics& g)
 
 void ContourtonistEditor::resized()
 {
+    aboutPanel.setBounds (getLocalBounds());
+
     auto bounds = getLocalBounds().reduced (12);
 
     // --- Header ------------------------------------------------------------------------
@@ -332,6 +342,7 @@ void ContourtonistEditor::resized()
 
     auto titleRow = header.removeFromTop (titleRowHeight);
     title.setBounds (titleRow.removeFromLeft (200));
+    aboutButton.setBounds (titleRow.removeFromRight (26).reduced (0, 2));
     fitLabel.setBounds (titleRow.removeFromRight (140));
 
     measuredLabel.setBounds (header.removeFromTop (measuredHeight));

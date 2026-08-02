@@ -3,6 +3,7 @@
 
 #include "GUI/CurveDisplay.h"
 #include "PluginProcessor.h"
+#include "StoatworksAboutPanel.h"
 
 #include <juce_audio_processors/juce_audio_processors.h>
 
@@ -52,6 +53,12 @@ private:
     };
 
     std::array<Knob, 6> knobs;
+
+    /* Vendored from stoatworks-backend/about - see StoatworksAboutPanel.h.
+       A child of the editor rather than a window of its own: a plugin must not
+       put a second top-level window on a host's screen. */
+    juce::TextButton aboutButton { "i" };
+    stoatworks::AboutPanel aboutPanel;
 
     juce::ToggleButton bypassButton { "Bypass" };
     juce::ToggleButton extrapolateButton { "Extend past ISO 226" };
