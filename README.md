@@ -100,6 +100,36 @@ UDP datagram, as text:
 A bare number works too. That means a meter Contourtonist has never heard of can drive it
 from a few lines of script, and that `nc -u` is a working diagnostic.
 
+<!-- downloads:start -->
+
+## Download
+
+**[v0.1.0](https://github.com/stoatworks-labs/contourtonist/releases/tag/v0.1.0)** — prebuilt for macOS. Pick your platform:
+
+<details>
+<summary><b>macOS</b> — Universal (Apple Silicon + Intel)</summary>
+
+| Build | Download | Size |
+| --- | --- | --- |
+| Universal (Apple Silicon + Intel) · .dmg disk image | [`contourtonist-0.1.0-macos-universal.dmg`](https://github.com/stoatworks-labs/contourtonist/releases/download/v0.1.0/contourtonist-0.1.0-macos-universal.dmg) | 11 MB |
+| Universal (Apple Silicon + Intel) · .pkg installer | [`contourtonist-0.1.0-macos-universal.pkg`](https://github.com/stoatworks-labs/contourtonist/releases/download/v0.1.0/contourtonist-0.1.0-macos-universal.pkg) | 9.9 MB |
+
+</details>
+
+All builds, checksums and release notes: [github.com/stoatworks-labs/contourtonist/releases](https://github.com/stoatworks-labs/contourtonist/releases).
+
+<!-- downloads:end -->
+
+macOS artefacts are **unsigned**, so Gatekeeper quarantines them and a DAW's plugin scan
+will reject them until you clear it. Approving the outer bundle does not unquarantine
+what is nested inside it:
+
+```bash
+xattr -dr com.apple.quarantine "/Library/Audio/Plug-Ins/VST3/Contourtonist.vst3"
+xattr -dr com.apple.quarantine "/Library/Audio/Plug-Ins/Components/Contourtonist.component"
+xattr -dr com.apple.quarantine "/Applications/Contourtonist.app"
+```
+
 ## Building
 
 ```bash
