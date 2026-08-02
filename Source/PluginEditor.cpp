@@ -45,6 +45,15 @@ ContourtonistEditor::ContourtonistEditor (ContourtonistProcessor& p)
     : AudioProcessorEditor (&p), processor (p)
 {
     buildControls();
+
+    // Resizable, because a plugin window that cannot be resized is a plugin window that
+    // is the wrong size on somebody's screen. Everything below the header is laid out
+    // with removeFrom*, so the extra space goes where it is worth having: the curve.
+    // The header and the settings panel keep their heights, which keeps the text legible
+    // rather than scaling it into either a smear or a billboard.
+    setResizable (true, true);
+    setResizeLimits (windowWidth, windowHeight, 2560, 1600);
+
     setSize (windowWidth, windowHeight);
     startTimerHz (20);
 }

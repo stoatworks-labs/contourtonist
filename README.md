@@ -22,6 +22,10 @@ measured level, the loudness level it maps to, and the resulting compensation cu
 rising to +6.35 dB at 20 Hz and passing through exactly 0 dB at 1
 kHz](docs/screenshots/tracking.png)
 
+**[Watch it work (63s)](https://www.youtube.com/watch?v=KHg28Tmo9F8)** — the real
+application, driven over its own UDP level protocol: the room drops, the curve climbs at
+its rate limit, and the level stops arriving.
+
 ## The idea
 
 A mix balanced at 100 dB and reproduced at 88 dB has not simply got quieter. Human hearing
