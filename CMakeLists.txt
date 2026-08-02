@@ -19,6 +19,18 @@ project(Contourtonist VERSION 0.1.1)
 set(CMAKE_CXX_STANDARD 20)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
+# MSVC's <cmath> only declares M_PI when this is defined, and it must be defined
+# before <cmath> is first included — Biquad.h pulls it in transitively, so a
+# #define at the top of Biquad.cpp/Weighting.cpp would already be too late.
+#
+# Directory scope, not target scope: those two DSP sources are compiled twice,
+# once into the JUCE plugin target and once into the contourtonist_core static
+# library the tests link. Defining it on the plugin target alone leaves the
+# static library failing to compile, which is exactly what happened.
+if(MSVC)
+    add_compile_definitions(_USE_MATH_DEFINES)
+endif()
+
 include(FetchContent)
 FetchContent_Declare(
     JUCE
@@ -113,12 +125,6 @@ target_compile_definitions(Contourtonist
         JUCE_VST3_CAN_REPLACE_VST2=0
         JUCE_DISPLAY_SPLASH_SCREEN=0
         DIAG_GIT_REV="${CONTOURTONIST_GIT_REV}"
-        # MSVC's <cmath> only declares M_PI when this is defined, and it has to be
-        # defined before the first include of it — which Biquad.h does transitively,
-        # so a #define at the top of the two .cpp files that use M_PI is too late.
-        # Biquad.cpp and Weighting.cpp are the users; the Windows build fails to
-        # compile without this.
-        $<$<CXX_COMPILER_ID:MSVC>:_USE_MATH_DEFINES>
 )
 
 target_link_libraries(Contourtonist
