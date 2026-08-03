@@ -1,0 +1,9 @@
+// Contourtonist web demo — static-assets-only Worker.
+// Deploy from web/: cf-run npx wrangler deploy
+{
+  "name": "contourtonist-demo",
+  "compatibility_date": "2026-08-03",
+  "assets": {
+    "directory": "./public"
+  }
+}

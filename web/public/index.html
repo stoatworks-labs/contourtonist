@@ -1,0 +1,229 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Contourtonist — Web Demo</title>
+<meta name="description" content="Try Contourtonist in the browser: the plugin's actual ISO 226 equal-loudness compensation DSP compiled to WebAssembly. Pull the system fader down and hear the tonal balance survive.">
+<style>
+  :root {
+    --bg: #14161a;
+    --panel: #1d2026;
+    --panel2: #23272f;
+    --border: #32363e;
+    --text: #d6d9de;
+    --dim: #8a8f98;
+    --accent: #e8b84b;
+    --accent2: #59c2ff;
+    --danger: #ff5d5d;
+    --warn: #e8a23c;
+  }
+  * { box-sizing: border-box; }
+  html, body { margin: 0; padding: 0; background: var(--bg); color: var(--text);
+    font: 13px/1.45 -apple-system, "Segoe UI", Roboto, Helvetica, Arial, sans-serif; }
+  #app { max-width: 1180px; margin: 0 auto; padding: 14px 16px 40px;
+    -webkit-user-select: none; user-select: none; }
+  footer { -webkit-user-select: text; user-select: text; }
+
+  header { display: flex; align-items: baseline; gap: 14px; flex-wrap: wrap; margin-bottom: 10px; }
+  header h1 { font-size: 20px; margin: 0; letter-spacing: 0.5px; }
+  header .sub { color: var(--dim); }
+  header a { color: var(--accent2); text-decoration: none; }
+  header .spacer { flex: 1; }
+
+  .row { display: flex; gap: 10px; align-items: center; flex-wrap: wrap; }
+  .panel { background: var(--panel); border: 1px solid var(--border); border-radius: 8px; padding: 10px 12px; }
+
+  #transport { margin-bottom: 10px; }
+  #playBtn { min-width: 88px; font-size: 14px; font-weight: 600; padding: 8px 14px;
+    background: var(--accent); color: #1a1408; border: none; border-radius: 6px; cursor: pointer; }
+  #playBtn.playing { background: var(--danger); color: #fff; }
+  select, button.small { background: var(--panel2); color: var(--text); border: 1px solid var(--border);
+    border-radius: 5px; padding: 5px 8px; font-size: 12.5px; }
+  label.inline { display: inline-flex; gap: 6px; align-items: center; color: var(--dim); white-space: nowrap; }
+  input[type=range] { accent-color: var(--accent); }
+  input[type=checkbox] { accent-color: var(--accent); }
+  .val { color: var(--text); min-width: 58px; display: inline-block; text-align: right;
+    font-variant-numeric: tabular-nums; }
+
+  #main { display: grid; grid-template-columns: 1fr 210px; gap: 10px; align-items: stretch; }
+  @media (max-width: 860px) { #main { grid-template-columns: 1fr; } }
+
+  #curve { width: 100%; height: 360px; display: block; background: #101216;
+    border: 1px solid var(--border); border-radius: 8px; }
+  #curveWrap { position: relative; }
+  #extrapBadge { position: absolute; left: 10px; top: 8px; display: none;
+    background: rgba(232,162,60,0.14); color: var(--warn); border: 1px solid rgba(232,162,60,0.5);
+    border-radius: 4px; padding: 2px 7px; font-size: 11px; }
+  #curveLegend { position: absolute; right: 10px; top: 8px; color: var(--dim); font-size: 11px;
+    text-align: right; pointer-events: none; }
+
+  #readouts { display: flex; gap: 18px; flex-wrap: wrap; margin-top: 8px; color: var(--dim);
+    font-variant-numeric: tabular-nums; }
+  #readouts b { color: var(--text); font-weight: 600; }
+  #statusRead.tracking { color: #7fc95f; }
+  #statusRead.waiting { color: var(--dim); }
+
+  /* --- the fader --- */
+  #faderPanel { display: flex; flex-direction: column; align-items: center; gap: 8px; }
+  #faderTitle { font-size: 11px; text-transform: uppercase; letter-spacing: 1px; color: var(--dim); }
+  #fader { position: relative; width: 120px; flex: 1; min-height: 300px; cursor: ns-resize;
+    touch-action: none; }
+  #faderTrack { position: absolute; left: 50%; top: 8px; bottom: 8px; width: 6px;
+    transform: translateX(-50%); background: #0d0f12; border: 1px solid var(--border); border-radius: 3px; }
+  #faderScale { position: absolute; inset: 0; pointer-events: none; }
+  #faderScale div { position: absolute; left: 0; width: 100%; color: var(--dim); font-size: 10px;
+    font-variant-numeric: tabular-nums; }
+  #faderScale div::before, #faderScale div::after { content: ""; position: absolute; top: 50%;
+    width: 16px; height: 1px; background: var(--border); }
+  #faderScale div::before { left: 12px; }
+  #faderScale div::after { right: 12px; }
+  #faderScale div span { position: absolute; right: 100%; display: none; }
+  #faderScale div i { position: absolute; left: -4px; top: -6px; font-style: normal; width: 100%;
+    text-align: left; }
+  #faderCap { position: absolute; left: 50%; width: 74px; height: 34px; transform: translate(-50%, -50%);
+    background: linear-gradient(#3a3f48, #23272f 45%, #1a1d22 55%, #2c313a); border: 1px solid #454b55;
+    border-radius: 5px; box-shadow: 0 3px 8px rgba(0,0,0,0.5); }
+  #faderCap::after { content: ""; position: absolute; left: 6px; right: 6px; top: 50%; height: 2px;
+    transform: translateY(-50%); background: var(--accent); border-radius: 1px; }
+  #roomLevel { font-size: 20px; font-weight: 600; font-variant-numeric: tabular-nums; }
+  #roomLevel small { color: var(--dim); font-size: 11px; font-weight: 400; }
+  #faderDbRead { color: var(--dim); font-size: 11px; font-variant-numeric: tabular-nums; }
+
+  #compBtn { width: 100%; padding: 8px 0; font-size: 13px; font-weight: 600; border-radius: 6px;
+    border: 1px solid var(--border); background: var(--panel2); color: var(--dim); cursor: pointer; }
+  #compBtn.on { background: rgba(232,184,75,0.15); border-color: var(--accent); color: var(--accent); }
+
+  .meterbox { display: flex; gap: 14px; justify-content: center; }
+  .meter { display: flex; flex-direction: column; align-items: center; gap: 4px; }
+  .meter canvas { background: #101216; border: 1px solid var(--border); border-radius: 4px; }
+  .meter .lbl { color: var(--dim); font-size: 11px; }
+
+  #settings { margin-top: 10px; }
+  .grid { display: grid; grid-template-columns: 130px 1fr 74px; gap: 6px 10px; align-items: center; }
+  .grid label { color: var(--dim); white-space: nowrap; }
+  .grid input[type=range] { width: 100%; }
+  .note { color: var(--dim); font-size: 11px; margin: 8px 0 0; }
+
+  footer { margin-top: 26px; color: var(--dim); font-size: 12px; line-height: 1.6; }
+  footer a { color: var(--accent2); text-decoration: none; }
+</style>
+</head>
+<body>
+<div id="app">
+  <header>
+    <h1>Contourtonist</h1>
+    <span class="sub">web demo — the plugin’s own equal-loudness DSP, compiled to WebAssembly · no microphone, the fader is the room</span>
+    <span class="spacer"></span>
+    <a href="https://github.com/stoatworks-labs/contourtonist" target="_blank" rel="noopener">GitHub ↗</a>
+  </header>
+
+  <div id="transport" class="panel row">
+    <button id="playBtn">▶ Play</button>
+    <label class="inline">Source
+      <select id="sourceSel">
+        <option value="groove">Demo groove (synthesized)</option>
+        <option value="sine">Sine</option>
+        <option value="white">White noise</option>
+        <option value="pink">Pink noise</option>
+        <option value="file">Uploaded file…</option>
+      </select>
+    </label>
+    <label class="inline" id="sineFreqRow" style="display:none">Freq
+      <input type="range" id="sineFreq" min="0" max="1" step="0.001" value="0.5" style="width:110px">
+      <span class="val" id="sineFreqVal">632 Hz</span>
+    </label>
+    <input type="file" id="fileInput" accept="audio/*" style="display:none">
+    <label class="inline">Trim
+      <input type="range" id="srcLevel" min="-24" max="6" step="0.5" value="-9" style="width:110px">
+      <span class="val" id="srcLevelVal">-9.0 dB</span>
+    </label>
+    <label class="inline" title="Web-only hard ceiling at -0.1 dBFS after the whole chain. The plugin has no such stage; it protects your ears/speakers at extreme settings.">
+      <input type="checkbox" id="safetyClip" checked> Safety clip
+    </label>
+  </div>
+
+  <div id="main">
+    <div>
+      <div id="curveWrap">
+        <canvas id="curve"></canvas>
+        <span id="extrapBadge">beyond ISO 226 validated range — extrapolated</span>
+        <div id="curveLegend">
+          <span style="color:#8a8f98">▪ target curve</span> ·
+          <span style="color:#e8b84b">▪ fitted bank (16 biquads)</span><br>
+          spectrum: <span style="color:#4a5a6a">■ in</span> / <span style="color:#7fb7d9">■ out</span>
+        </div>
+      </div>
+      <div id="readouts">
+        <span>status <b id="statusRead" class="waiting">waiting</b></span>
+        <span>room <b id="roomRead">—</b></span>
+        <span>curve built for <b id="trackedRead">—</b></span>
+        <span>curve peak <b id="peakRead">0.00 dB</b></span>
+        <span>fit error <b id="fitRead">0.00 dB</b></span>
+        <span>G(1 kHz) <b>0.00 dB, always</b></span>
+      </div>
+
+      <div id="settings" class="panel">
+        <div class="grid">
+          <label title="The level the system was tuned and the material balanced at. Compensation is zero when the room sits here.">Reference level</label>
+          <input type="range" id="refSpl" min="85" max="105" step="1" value="100">
+          <span class="val" id="refSplVal">100 dB</span>
+
+          <label title="Fastest the curve may move. The plugin defaults to 0.5 dB/s — deliberately slow for a live system; the demo defaults faster so you can hear it working.">Rate limit</label>
+          <input type="range" id="rate" min="0.1" max="6" step="0.1" value="2">
+          <span class="val" id="rateVal">2.0 dB/s</span>
+
+          <label title="The measured level must move by more than this before the curve follows.">Hysteresis</label>
+          <input type="range" id="hyst" min="0" max="3" step="0.1" value="1">
+          <span class="val" id="hystVal">1.0 dB</span>
+
+          <label title="Hard ceiling on the curve. The whole curve is scaled down to fit, never clipped.">Max gain</label>
+          <input type="range" id="maxGain" min="3" max="12" step="0.5" value="12">
+          <span class="val" id="maxGainVal">12.0 dB</span>
+
+          <label title="ISO 226:2003 validates 20–90 phon (80 above 5 kHz). 'Extend' keeps evaluating the equations beyond it — smooth, but not backed by listening data. 'Clamp' is strictly conformant and does nothing at show levels.">Beyond ISO range</label>
+          <select id="extrap"><option value="1" selected>Extend (default)</option><option value="0">Clamp (conformant)</option></select>
+          <span></span>
+        </div>
+        <p class="note">The plugin’s control-rate default is 0.5 dB/s — on a show, nobody should hear the system EQ move.
+          The demo default is faster so the effect is easier to catch.</p>
+      </div>
+    </div>
+
+    <div class="panel" id="faderPanel">
+      <span id="faderTitle">System level</span>
+      <div id="roomLevel">100.0 <small>dB SPL</small></div>
+      <span id="faderDbRead">0.0 dB</span>
+      <div id="fader">
+        <div id="faderTrack"></div>
+        <div id="faderScale"></div>
+        <div id="faderCap"></div>
+      </div>
+      <button id="compBtn" class="on">Compensation ON</button>
+      <div class="meterbox">
+        <div class="meter"><canvas id="inMeter" width="26" height="90"></canvas><span class="lbl">IN</span></div>
+        <div class="meter"><canvas id="outMeter" width="26" height="90"></canvas><span class="lbl">OUT</span></div>
+      </div>
+    </div>
+  </div>
+
+  <footer>
+    <p>This demo runs the actual DSP from the
+      <a href="https://github.com/stoatworks-labs/contourtonist" target="_blank" rel="noopener">Contourtonist plugin</a>
+      — the ISO 226:2003 equal-loudness model, the rate-limited loudness controller, and the 16-biquad
+      zero-added-latency filter bank — compiled unmodified to WebAssembly and running in an AudioWorklet.</p>
+    <p>What you’re hearing: as reproduction level falls, hearing loses bass (and some extreme treble)
+      sensitivity faster than midrange. Pull the fader down with compensation on and the tonal balance
+      survives; toggle it off to hear what a plain volume drop does. The curve pivots at 1&nbsp;kHz where
+      its gain is identically zero — it can change tonal balance, never level.
+      In the real plugin the room level comes from a measurement microphone over the network; here the
+      fader stands in for it, so there is no acoustic feedback loop to demonstrate.
+      Uploaded audio never leaves your browser. The “safety clip” output stage is web-only.</p>
+    <p>Parts of this project were built with AI assistance; the DSP core is verified against a native
+      build of the plugin’s own sources. © Stoatworks. Audio sources are synthesized in-browser — no
+      third-party media.</p>
+  </footer>
+</div>
+<script type="module" src="app.js"></script>
+</body>
+</html>

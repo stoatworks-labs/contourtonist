@@ -26,6 +26,11 @@ kHz](docs/screenshots/tracking.png)
 application, driven over its own UDP level protocol: the room drops, the curve climbs at
 its rate limit, and the level stops arriving.
 
+**[Try it in your browser](https://contourtonist-demo.allan-sargeant.workers.dev)** — the
+plugin's own DSP compiled to WebAssembly, with an on-screen system fader standing in for
+the measurement microphone. Pull it down and hear the tonal balance survive; see
+[`web/`](web/) for how the demo relates to the real thing.
+
 ## The idea
 
 A mix balanced at 100 dB and reproduced at 88 dB has not simply got quieter. Human hearing
