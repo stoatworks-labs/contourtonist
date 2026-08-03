@@ -26,7 +26,7 @@ kHz](docs/screenshots/tracking.png)
 application, driven over its own UDP level protocol: the room drops, the curve climbs at
 its rate limit, and the level stops arriving.
 
-**[Try it in your browser](https://contourtonist-demo.allan-sargeant.workers.dev)** — the
+**[Try it in your browser](https://contourtonist-demo.stoatworks-labs.com)** — the
 plugin's own DSP compiled to WebAssembly, with an on-screen system fader standing in for
 the measurement microphone. Pull it down and hear the tonal balance survive; see
 [`web/`](web/) for how the demo relates to the real thing.

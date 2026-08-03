@@ -5,5 +5,8 @@
   "compatibility_date": "2026-08-03",
   "assets": {
     "directory": "./public"
-  }
+  },
+  "routes": [
+    { "pattern": "contourtonist-demo.stoatworks-labs.com", "custom_domain": true }
+  ]
 }

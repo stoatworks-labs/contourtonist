@@ -1,6 +1,6 @@
 # Contourtonist — Web Demo
 
-Try Contourtonist in the browser: **https://contourtonist-demo.allan-sargeant.workers.dev**
+Try Contourtonist in the browser: **https://contourtonist-demo.stoatworks-labs.com**
 
 This is the plugin's own DSP — the unmodified sources in [`../Source/DSP`](../Source/DSP)
 — compiled to WebAssembly and run inside an AudioWorklet. The measurement-microphone
