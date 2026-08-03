@@ -9,3 +9,6 @@ CMakeUserPresets.json
 .cache/
 dist-release/
 build-release/
+
+# wrangler dev local state
+web/.wrangler/
