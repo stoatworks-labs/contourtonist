@@ -156,15 +156,8 @@ All builds, checksums and release notes: [github.com/stoatworks-labs/contourtoni
 
 <!-- downloads:end -->
 
-macOS artefacts are **unsigned**, so Gatekeeper quarantines them and a DAW's plugin scan
-will reject them until you clear it. Approving the outer bundle does not unquarantine
-what is nested inside it:
-
-```bash
-xattr -dr com.apple.quarantine "/Library/Audio/Plug-Ins/VST3/Contourtonist.vst3"
-xattr -dr com.apple.quarantine "/Library/Audio/Plug-Ins/Components/Contourtonist.component"
-xattr -dr com.apple.quarantine "/Applications/Contourtonist.app"
-```
+macOS artefacts are **Developer ID-signed and notarised by Apple**, so Gatekeeper
+lets them through and a DAW's plugin scan accepts them — no quarantine step.
 
 ## Building
 
