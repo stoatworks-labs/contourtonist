@@ -120,9 +120,9 @@ from a few lines of script, and that `nc -u` is a working diagnostic.
 
 | Build | Download | Size |
 | --- | --- | --- |
-| Universal (Apple Silicon + Intel) · .dmg disk image | [`contourtonist-0.1.1-macos-universal.dmg`](https://github.com/stoatworks-labs/contourtonist/releases/download/v0.1.1/contourtonist-0.1.1-macos-universal.dmg) | 11 MB |
+| Universal (Apple Silicon + Intel) · .dmg disk image | [`contourtonist-0.1.1-macos-universal.dmg`](https://github.com/stoatworks-labs/contourtonist/releases/download/v0.1.1/contourtonist-0.1.1-macos-universal.dmg) | 9.8 MB |
 | Universal (Apple Silicon + Intel) · .pkg installer | [`contourtonist-0.1.1-macos-universal.pkg`](https://github.com/stoatworks-labs/contourtonist/releases/download/v0.1.1/contourtonist-0.1.1-macos-universal.pkg) | 9.8 MB |
-| Universal (Apple Silicon + Intel) · .zip archive | [`contourtonist-macos-universal.zip`](https://github.com/stoatworks-labs/contourtonist/releases/latest/download/contourtonist-macos-universal.zip) | 9.5 MB |
+| Universal (Apple Silicon + Intel) · .zip archive | [`contourtonist-macos-universal.zip`](https://github.com/stoatworks-labs/contourtonist/releases/latest/download/contourtonist-macos-universal.zip) | 9.8 MB |
 
 </details>
 
@@ -153,6 +153,8 @@ from a few lines of script, and that `nc -u` is a working diagnostic.
 </details>
 
 All builds, checksums and release notes: [github.com/stoatworks-labs/contourtonist/releases](https://github.com/stoatworks-labs/contourtonist/releases).
+
+macOS builds are signed and notarised and open normally. The Windows builds are unsigned, so SmartScreen warns once.
 
 <!-- downloads:end -->
 
