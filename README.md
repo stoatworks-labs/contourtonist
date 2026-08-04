@@ -210,6 +210,10 @@ to that same output. That is a closed loop, and the design takes it seriously:
   part of the correction twice. C is the default. Shows are still policed in dB(A), so the
   standalone measures what you need and controls on what is correct.
 
+<!-- attributions:start -->
+This project is built on other people's work — see [ATTRIBUTIONS.md](ATTRIBUTIONS.md).
+<!-- attributions:end -->
+
 ## Licence
 
 MIT. See [LICENSE](LICENSE).
