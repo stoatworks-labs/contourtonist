@@ -212,6 +212,8 @@ to that same output. That is a closed loop, and the design takes it seriously:
 
 <!-- attributions:start -->
 This project is built on other people's work — see [ATTRIBUTIONS.md](ATTRIBUTIONS.md).
+
+**Licensing:** the source here is MIT, but the released binaries link JUCE 8 and are conveyed under the **AGPLv3** — see [ATTRIBUTIONS.md](ATTRIBUTIONS.md) before redistributing them.
 <!-- attributions:end -->
 
 ## Licence
