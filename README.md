@@ -113,16 +113,16 @@ from a few lines of script, and that `nc -u` is a working diagnostic.
 
 ## Download
 
-**[v0.1.1](https://github.com/stoatworks-labs/contourtonist/releases/tag/v0.1.1)** — prebuilt for macOS, Windows and Linux. Pick your platform:
+**[v0.2.0](https://github.com/stoatworks-labs/contourtonist/releases/tag/v0.2.0)** — prebuilt for macOS, Windows and Linux. Pick your platform:
 
 <details>
 <summary><b>macOS</b> — Universal (Apple Silicon + Intel)</summary>
 
 | Build | Download | Size |
 | --- | --- | --- |
-| Universal (Apple Silicon + Intel) · .dmg disk image | [`contourtonist-0.1.1-macos-universal.dmg`](https://github.com/stoatworks-labs/contourtonist/releases/download/v0.1.1/contourtonist-0.1.1-macos-universal.dmg) | 9.8 MB |
-| Universal (Apple Silicon + Intel) · .pkg installer | [`contourtonist-0.1.1-macos-universal.pkg`](https://github.com/stoatworks-labs/contourtonist/releases/download/v0.1.1/contourtonist-0.1.1-macos-universal.pkg) | 9.8 MB |
-| Universal (Apple Silicon + Intel) · .zip archive | [`contourtonist-macos-universal.zip`](https://github.com/stoatworks-labs/contourtonist/releases/latest/download/contourtonist-macos-universal.zip) | 9.8 MB |
+| Universal (Apple Silicon + Intel) · .dmg disk image | [`contourtonist-0.2.0-macos-universal.dmg`](https://github.com/stoatworks-labs/contourtonist/releases/download/v0.2.0/contourtonist-0.2.0-macos-universal.dmg) | 10.0 MB |
+| Universal (Apple Silicon + Intel) · .pkg installer | [`contourtonist-0.2.0-macos-universal.pkg`](https://github.com/stoatworks-labs/contourtonist/releases/download/v0.2.0/contourtonist-0.2.0-macos-universal.pkg) | 10.0 MB |
+| Universal (Apple Silicon + Intel) · .zip archive | [`contourtonist-macos-universal.zip`](https://github.com/stoatworks-labs/contourtonist/releases/latest/download/contourtonist-macos-universal.zip) | 9.9 MB |
 
 </details>
 
@@ -131,9 +131,9 @@ from a few lines of script, and that `nc -u` is a working diagnostic.
 
 | Build | Download | Size |
 | --- | --- | --- |
-| x64 · .exe installer | [`contourtonist-0.1.1-windows-x86_64-setup.exe`](https://github.com/stoatworks-labs/contourtonist/releases/download/v0.1.1/contourtonist-0.1.1-windows-x86_64-setup.exe) | 2.8 MB |
-| ARM64 · .exe installer | [`contourtonist-0.1.1-windows-aarch64-setup.exe`](https://github.com/stoatworks-labs/contourtonist/releases/download/v0.1.1/contourtonist-0.1.1-windows-aarch64-setup.exe) | 2.6 MB |
-| x64 · .zip archive | [`contourtonist-windows-x86_64.zip`](https://github.com/stoatworks-labs/contourtonist/releases/latest/download/contourtonist-windows-x86_64.zip) | 5.0 MB |
+| x64 · .exe installer | [`contourtonist-0.2.0-windows-x86_64-setup.exe`](https://github.com/stoatworks-labs/contourtonist/releases/download/v0.2.0/contourtonist-0.2.0-windows-x86_64-setup.exe) | 2.8 MB |
+| ARM64 · .exe installer | [`contourtonist-0.2.0-windows-aarch64-setup.exe`](https://github.com/stoatworks-labs/contourtonist/releases/download/v0.2.0/contourtonist-0.2.0-windows-aarch64-setup.exe) | 2.6 MB |
+| x64 · .zip archive | [`contourtonist-windows-x86_64.zip`](https://github.com/stoatworks-labs/contourtonist/releases/latest/download/contourtonist-windows-x86_64.zip) | 5.1 MB |
 | ARM64 · .zip archive | [`contourtonist-windows-aarch64.zip`](https://github.com/stoatworks-labs/contourtonist/releases/latest/download/contourtonist-windows-aarch64.zip) | 4.9 MB |
 
 </details>
@@ -143,10 +143,10 @@ from a few lines of script, and that `nc -u` is a working diagnostic.
 
 | Build | Download | Size |
 | --- | --- | --- |
-| x64 · .deb package (Debian/Ubuntu) | [`contourtonist_0.1.1_amd64.deb`](https://github.com/stoatworks-labs/contourtonist/releases/download/v0.1.1/contourtonist_0.1.1_amd64.deb) | 2.1 MB |
-| ARM64 · .deb package (Debian/Ubuntu) | [`contourtonist_0.1.1_arm64.deb`](https://github.com/stoatworks-labs/contourtonist/releases/download/v0.1.1/contourtonist_0.1.1_arm64.deb) | 2.1 MB |
-| x64 · .rpm package (Fedora/RHEL) | [`contourtonist-0.1.1-1.x86_64.rpm`](https://github.com/stoatworks-labs/contourtonist/releases/download/v0.1.1/contourtonist-0.1.1-1.x86_64.rpm) | 2.1 MB |
-| ARM64 · .rpm package (Fedora/RHEL) | [`contourtonist-0.1.1-1.aarch64.rpm`](https://github.com/stoatworks-labs/contourtonist/releases/download/v0.1.1/contourtonist-0.1.1-1.aarch64.rpm) | 2.2 MB |
+| x64 · .deb package (Debian/Ubuntu) | [`contourtonist_0.2.0_amd64.deb`](https://github.com/stoatworks-labs/contourtonist/releases/download/v0.2.0/contourtonist_0.2.0_amd64.deb) | 2.1 MB |
+| ARM64 · .deb package (Debian/Ubuntu) | [`contourtonist_0.2.0_arm64.deb`](https://github.com/stoatworks-labs/contourtonist/releases/download/v0.2.0/contourtonist_0.2.0_arm64.deb) | 2.2 MB |
+| x64 · .rpm package (Fedora/RHEL) | [`contourtonist-0.2.0-1.x86_64.rpm`](https://github.com/stoatworks-labs/contourtonist/releases/download/v0.2.0/contourtonist-0.2.0-1.x86_64.rpm) | 2.2 MB |
+| ARM64 · .rpm package (Fedora/RHEL) | [`contourtonist-0.2.0-1.aarch64.rpm`](https://github.com/stoatworks-labs/contourtonist/releases/download/v0.2.0/contourtonist-0.2.0-1.aarch64.rpm) | 2.2 MB |
 | x64 · .zip archive | [`contourtonist-linux-x86_64.zip`](https://github.com/stoatworks-labs/contourtonist/releases/latest/download/contourtonist-linux-x86_64.zip) | 4.2 MB |
 | ARM64 · .zip archive | [`contourtonist-linux-aarch64.zip`](https://github.com/stoatworks-labs/contourtonist/releases/latest/download/contourtonist-linux-aarch64.zip) | 4.2 MB |
 
