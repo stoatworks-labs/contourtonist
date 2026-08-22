@@ -182,9 +182,13 @@ output. That is a closed loop, and the design takes it seriously:
 
 ## Installing the plugins on macOS
 
-The macOS artefacts are **unsigned**, so Gatekeeper quarantines them and a DAW's plugin scan will
-reject them until you clear it. **Approving the outer bundle does not unquarantine what is nested
-inside it**, so clear each one explicitly:
+The macOS artefacts are **Developer ID-signed and notarised**, so a DAW's plugin scan accepts
+them and there is nothing to clear.
+
+If you built the plugins yourself, or you are running a download from before that changed, they
+are quarantined instead — and a DAW *rejects* a quarantined plugin during its scan rather than
+telling you why. **Approving the outer bundle does not unquarantine what is nested inside it**, so
+clear each one explicitly:
 
 ```bash
 xattr -dr com.apple.quarantine "/Library/Audio/Plug-Ins/VST3/Contourtonist.vst3"
@@ -205,7 +209,7 @@ xattr -dr com.apple.quarantine "/Applications/Contourtonist.app"
 | **Amber "extrapolated" warning** | Show levels are above ISO 226's validated 90 phon. Expected; turn off **Extend past ISO 226** for strict behaviour. |
 | **Plugin measures its own output and misbehaves** | Level source is set to the instance's audio input. In a plugin you almost always want Network (UDP). |
 | **Standalone mutes its audio input** | Deliberate — it is measuring and passing audio at once, which would be a feedback loop. |
-| **DAW's plugin scan rejects it on macOS** | Quarantine. Clear it on the `.vst3` and `.component` themselves, not just the app. |
+| **DAW's plugin scan rejects it on macOS** | The releases are notarised, so suspect a self-built or older copy: quarantine, cleared on the `.vst3` and `.component` themselves, not just the app. |
 | **A-weighted compliance number disagrees with the meter** | Above 10 kHz the built-in weighting aliases. Log from a real meter. |
 
 ---
