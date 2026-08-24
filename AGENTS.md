@@ -175,3 +175,10 @@ never met a calibrator. See `docs/meters.md`.
 - **Oversampled measurement path.** Would fix §4.5 properly.
 - **Sidechain input.** The network-companion design was chosen instead; a sidechain bus would
   be a reasonable second route into the same controller.
+
+## Notes
+
+`docs/NOTES.md` carries this repo's working notes — current status, decisions
+already made, and the traps that have actually bitten. Read it before changing
+anything non-obvious. Cross-cutting fleet knowledge lives in
+[fleet-notes](https://github.com/stoatworks-labs/fleet-notes).
