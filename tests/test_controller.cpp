@@ -141,6 +141,104 @@ int main()
     }
 
     // ---------------------------------------------------------------------------
+    section ("Moving the Reference is rate limited like everything else");
+
+    {
+        // The Reference knob is automatable across 60-110 dB and the curve is built
+        // from it. Read straight off the parameter, a 100 -> 90 move against a room
+        // tracking at 95 put a 5.3 dB step at 20 Hz into one 33 ms tick — the event
+        // the rate limit exists to prevent. AGENTS.md section 2: "The rate limit has
+        // no exceptions ... the single property that makes this safe to put across a
+        // PA."
+        LoudnessController c;
+        Settings s;
+        s.referenceSplDb  = 100.0;
+        s.rateDbPerSecond = 0.5;
+        s.hysteresisDb    = 1.0;
+        c.setSettings (s);
+
+        // Settle a show tracking at 95 phon against a 100 dB reference.
+        for (std::int64_t t = 0; t <= 120000; t += 100)
+        {
+            c.measurement (95.0, t);
+            c.advance (t);
+        }
+
+        const double settled20Hz = c.currentCurve().gainAt (20.0);
+
+        // Now drag Reference 100 -> 90 and give it a single 33 ms tick.
+        s.referenceSplDb = 90.0;
+        c.setSettings (s);
+        c.measurement (95.0, 120033);
+        c.advance (120033);
+
+        const double afterOneTick = c.currentCurve().gainAt (20.0);
+        const double step         = std::abs (afterOneTick - settled20Hz);
+
+        std::printf ("  20 Hz: %.3f dB -> %.3f dB in one 33 ms tick (step %.3f dB)\n",
+                     settled20Hz, afterOneTick, step);
+
+        // 0.5 dB/s for 33 ms is 0.0165 dB. Allow a little slack for the phon->curve
+        // conversion, but nothing remotely like the 5.29 dB this used to be.
+        expectTrue (step <= 0.5 * 0.033 + 0.02,
+                    "a Reference move is rate limited within one tick");
+
+        // It must still get there, just not instantly.
+        for (std::int64_t t = 120033; t <= 400000; t += 100)
+        {
+            c.measurement (95.0, t);
+            c.advance (t);
+        }
+
+        std::printf ("  20 Hz after the move completes: %.3f dB\n",
+                     c.currentCurve().gainAt (20.0));
+
+        expectTrue (std::abs (c.currentCurve().gainAt (20.0) - settled20Hz) > 1.0,
+                    "the Reference move does eventually take effect");
+    }
+
+    {
+        // The budget is shared, so reference and measurement moving at once cannot
+        // add up to twice the limit.
+        LoudnessController c;
+        Settings s;
+        s.referenceSplDb  = 100.0;
+        s.rateDbPerSecond = 0.5;
+        s.hysteresisDb    = 1.0;
+        c.setSettings (s);
+
+        for (std::int64_t t = 0; t <= 60000; t += 100)
+        {
+            c.measurement (95.0, t);
+            c.advance (t);
+        }
+
+        const double before = c.currentCurve().gainAt (20.0);
+
+        // Reference down 10 dB and the room up 10 dB in the same instant.
+        s.referenceSplDb = 90.0;
+        c.setSettings (s);
+
+        double worstStep = 0.0;
+        double previous  = before;
+
+        for (std::int64_t t = 60100; t <= 61000; t += 100)
+        {
+            c.measurement (105.0, t);
+            c.advance (t);
+
+            const double now = c.currentCurve().gainAt (20.0);
+            worstStep = std::max (worstStep, std::abs (now - previous));
+            previous  = now;
+        }
+
+        std::printf ("  worst 100 ms step with both moving: %.4f dB\n", worstStep);
+
+        expectTrue (worstStep <= 0.5 * 0.1 + 0.02,
+                    "reference and measurement share one rate budget");
+    }
+
+    // ---------------------------------------------------------------------------
     section ("Hysteresis stops the curve dithering on programme fluctuation");
 
     {

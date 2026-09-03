@@ -16,6 +16,9 @@ void LoudnessController::reset()
     // curve on the first advance.
     target            = settings.referenceSplDb;
     tracked           = settings.referenceSplDb;
+    // A reset is the one moment the reference may be adopted outright: there is no
+    // curve in place to jump, and the plugin has just been told to start over.
+    trackedReference  = settings.referenceSplDb;
     haveMeasurement   = false;
     lastMeasurementMs = 0;
     lastAdvanceMs     = 0;
@@ -65,7 +68,10 @@ void LoudnessController::measurement (double splDb, std::int64_t timestampMs)
         // across a live system. An exception to it is a hole in that guarantee, and
         // costs only that the first half-minute is under-compensated.
         target          = clamped;
-        tracked         = settings.referenceSplDb;
+        // The SLEWED reference: starting the curve flat means starting it where the
+        // curve currently is, and if the operator has moved the Reference knob the
+        // parameter is somewhere the curve has not reached yet.
+        tracked         = trackedReference;
         haveMeasurement = true;
         rebuildCurve();
     }
@@ -128,19 +134,43 @@ void LoudnessController::advance (std::int64_t timestampMs)
     constexpr double curveDbPerPhonDb = 0.53;
 
     const double maxPhonStep = (settings.rateDbPerSecond / curveDbPerPhonDb) * elapsedSeconds;
-    const double error       = target - tracked;
 
-    if (std::abs (error) <= maxPhonStep)
-        tracked = target;
+    // Two things move the curve, not one. `tracked` is the measured level; the
+    // reference is the other end of the same comparison, and moving it a dB bends
+    // the curve just as much. The Reference knob is automatable over 60-110 dB, so
+    // taking it straight from the parameter put up to 5.3 dB of curve change into a
+    // single 33 ms tick — the exact event the rate limit exists to prevent, and the
+    // one AGENTS.md §2 and docs/control-loop.md say has no exceptions.
+    //
+    // They share ONE budget rather than getting one each, so the worst case is the
+    // limit and not twice it. Splitting it in proportion to how far each still has
+    // to go keeps a reference move from starving the measurement it is compared
+    // against, or the reverse. Moving both the same way barely bends the curve at
+    // all, so charging for both is conservative — which is the safe direction for
+    // something across a PA.
+    const double referenceError = settings.referenceSplDb - trackedReference;
+    const double trackedError   = target - tracked;
+    const double demand         = std::abs (referenceError) + std::abs (trackedError);
+
+    if (demand <= maxPhonStep || demand <= 0.0)
+    {
+        trackedReference = settings.referenceSplDb;
+        tracked          = target;
+    }
     else
-        tracked += std::copysign (maxPhonStep, error);
+    {
+        const double scale = maxPhonStep / demand;
+        trackedReference += referenceError * scale;
+        tracked          += trackedError * scale;
+    }
 
     rebuildCurve();
 }
 
 void LoudnessController::rebuildCurve()
 {
-    double effectiveReference = settings.referenceSplDb;
+    // The slewed reference, never settings.referenceSplDb — see advance().
+    double effectiveReference = trackedReference;
     double effectiveCurrent   = tracked;
 
     if (settings.loopCompensation == LoopCompensation::estimated)

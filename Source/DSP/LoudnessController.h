@@ -194,6 +194,12 @@ private:
                                     // (both start at the default reference, where the
                                     //  curve is flat — see reset())
 
+    // The reference the curve is built AGAINST, slewed rather than read straight
+    // from the parameter. Both ends of that comparison move the curve, so a
+    // reference that jumps moves it exactly as far, and as fast, as a measurement
+    // that jumps. See the shared rate budget in advance().
+    double trackedReference = 100.0;
+
     bool haveMeasurement = false;
 
     std::int64_t lastMeasurementMs = 0;
