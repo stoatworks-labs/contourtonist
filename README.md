@@ -66,7 +66,7 @@ packets, and the curve is flat](docs/screenshots/no-level.png)
 
 ## Status
 
-Version 0.2.0, released 2026-08-18 for macOS, Windows and Linux. Builds and passes tests; never used in anger.
+Version 0.2.2, released 2026-09-04 for macOS, Windows and Linux. v0.2.2 rate-limits the Reference control as well as the measurement, so a dragged reference level can no longer step the whole curve in one tick; v0.2.1 changed only the Windows installer, which no longer touches the system PATH. Builds and passes tests; never used in anger.
 
 | | |
 |---|---|
