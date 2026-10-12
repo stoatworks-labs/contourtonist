@@ -53,7 +53,8 @@ For a 100 dB reference reproduced at 85 dB, the correction is +7.9 dB at 20 Hz, 
 100 Hz, 0 dB at 1 kHz, −0.5 dB at 4 kHz and +2.5 dB at 12.5 kHz.
 
 The further the room falls below the reference, the more there is to put back. At 78 dB
-against the same 100 dB reference the curve reaches its 12 dB ceiling:
+against the same 100 dB reference the curve climbs to 11.10 dB at 20 Hz, just short of its
+12 dB ceiling:
 
 ![The same window with the room 22 dB down, the curve now reaching 11.10 dB at 20 Hz and
 approaching the configured gain ceiling](docs/screenshots/deep-correction.png)
