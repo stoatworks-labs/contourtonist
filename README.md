@@ -2,52 +2,52 @@
 
 > **AI-assisted project.** This codebase was created with [Claude](https://claude.com/claude-code)
 > (Anthropic), directed and reviewed by a human author. The ISO 226:2003 coefficients were
-> transcribed from the standard itself and are checked against it by the test suite; the
-> filter bank's accuracy, the control loop's stability and the meter parsers are all
-> measured rather than asserted. The AU passes `auval` and the UDP transport is tested over
-> real sockets. It has **never been used on a real system, with a real microphone, at a
-> real show.** Nothing here has been checked against a reference sound level meter, and no
-> hardware calibrator has ever been connected. Review before use on live gear.
+> transcribed from the standard itself, and the test suite checks them against it. The filter
+> bank's accuracy, the control loop's stability and the meter parsers are all measured rather
+> than asserted, the AU passes `auval`, and the UDP transport is tested over real sockets. It
+> has **never been used on a real system, with a real microphone, at a real show.** Nothing
+> here has been checked against a reference sound level meter, and no hardware calibrator has
+> ever been connected. Check it over before you use it on live gear.
 
-An equal-loudness compensation EQ that tracks the room. VST3, AU and standalone, built with
-JUCE.
+Contourtonist is an equal-loudness compensation EQ that tracks the room. It comes as VST3, AU
+and standalone, built with JUCE.
 
-Contourtonist measures how loud the room actually is — from a calibrated measurement
-microphone, or from an SPL meter's live output — and applies the EQ curve that keeps the
-tonal balance the system was tuned for as the level moves. When a noise limit pulls the
-show down 8 dB, the bass does not leave with it.
+It measures how loud the room actually is (from a calibrated measurement microphone, or from
+an SPL meter's live output) and applies the EQ curve that keeps the tonal balance the system
+was tuned for as the level moves. So when a noise limit pulls the show down 8 dB, the bass
+doesn't go home with it.
 
 ![The Contourtonist standalone tracking a room 12 dB below its reference level: the
 measured level, the loudness level it maps to, and the resulting compensation curve
 rising to +6.35 dB at 20 Hz and passing through exactly 0 dB at 1
 kHz](docs/screenshots/tracking.png)
 
-**[Watch it work (63s)](https://www.youtube.com/watch?v=KHg28Tmo9F8)** — the real
-application, driven over its own UDP level protocol: the room drops, the curve climbs at
-its rate limit, and the level stops arriving.
+**[Watch it work (63s)](https://www.youtube.com/watch?v=KHg28Tmo9F8)**: the actual
+application, driven over its own UDP level protocol. The room drops, the curve climbs at its
+rate limit, and then the level stops arriving.
 
-**[Try it in your browser](https://contourtonist-demo.stoatworks-labs.com)** — the
-plugin's own DSP compiled to WebAssembly, with an on-screen system fader standing in for
-the measurement microphone. Pull it down and hear the tonal balance survive; see
-[`web/`](web/) for how the demo relates to the real thing.
+**[Try it in your browser](https://contourtonist-demo.stoatworks-labs.com)**: the plugin's
+own DSP compiled to WebAssembly, with an on-screen system fader standing in for the
+measurement microphone. Pull it down and listen to the tonal balance hang on. [`web/`](web/)
+explains how the demo relates to the real thing.
 
 ## The idea
 
-A mix balanced at 100 dB and reproduced at 88 dB has not simply got quieter. Human hearing
-is less sensitive at low frequencies at low levels, and the effect is strongly
-level-dependent, so a uniform 12 dB drop takes far more perceived bass away than it takes
-midrange. That relationship is exactly what ISO 226:2003's equal-loudness contours describe.
+A mix balanced at 100 dB and played back at 88 dB hasn't just got quieter. Human hearing is
+less sensitive to low frequencies at low levels, and the effect depends strongly on level, so
+a uniform 12 dB drop takes far more perceived bass away than it takes midrange. That
+relationship is what ISO 226:2003's equal-loudness contours describe.
 
 Take the contour at the reference level, take the contour at the measured level, and the
-difference between them — normalised at 1 kHz — is the correction:
+difference between them (normalised at 1 kHz) is the correction:
 
 ```
 G(f) = (reference − current) − [ Lp(f, reference) − Lp(f, current) ]
 ```
 
 At 1 kHz `Lp(1k, P) == P` by definition, so `G(1 kHz)` is identically zero. **The curve can
-only ever change tonal balance, never level.** That is not a convention, it is arithmetic,
-and the test suite pins it: this is a system EQ, not a slow automatic fader.
+only ever change tonal balance, never level.** That's arithmetic rather than a convention, and
+the test suite pins it. This is a system EQ, not a slow automatic fader.
 
 For a 100 dB reference reproduced at 85 dB, the correction is +7.9 dB at 20 Hz, +4.7 dB at
 100 Hz, 0 dB at 1 kHz, −0.5 dB at 4 kHz and +2.5 dB at 12.5 kHz.
@@ -58,7 +58,7 @@ against the same 100 dB reference the curve reaches its 12 dB ceiling:
 ![The same window with the room 22 dB down, the curve now reaching 11.10 dB at 20 Hz and
 approaching the configured gain ceiling](docs/screenshots/deep-correction.png)
 
-And when no level is arriving it says so, holds the curve flat, and does not invent a
+And when no level is arriving it says so, holds the curve flat, and doesn't make up a
 measurement:
 
 ![The window with no level arriving: the level reads dashes, the status line reports zero
@@ -66,7 +66,7 @@ packets, and the curve is flat](docs/screenshots/no-level.png)
 
 ## Status
 
-Version 0.2.2, released 2026-09-04 for macOS, Windows and Linux. v0.2.2 rate-limits the Reference control as well as the measurement, so a dragged reference level can no longer step the whole curve in one tick; v0.2.1 changed only the Windows installer, which no longer touches the system PATH. Builds and passes tests; never used in anger.
+Version 0.2.2, released 2026-09-04 for macOS, Windows and Linux. v0.2.2 rate-limits the Reference control as well as the measurement, so dragging the reference level can't step the whole curve in one tick any more. v0.2.1 only changed the Windows installer, which no longer touches the system PATH. It builds and passes its tests, and it's never been used in anger.
 
 | | |
 |---|---|
@@ -78,16 +78,16 @@ Version 0.2.2, released 2026-09-04 for macOS, Windows and Linux. v0.2.2 rate-lim
 
 ## How it is wired
 
-The host owns the audio device, so a plugin instance cannot open the measurement
-microphone itself. Contourtonist therefore splits in two:
+The host owns the audio device, so a plugin instance can't open the measurement microphone
+itself. So Contourtonist comes in two halves:
 
 - The **standalone** owns the microphone and the calibration. It measures a sliding
   short-term Leq and publishes the level over UDP.
 - **Plugin instances** subscribe to that level and apply the curve to their own audio.
 
-One microphone drives every instance in the session, which is also what a live rig with
-several processing chains wants. A plugin can instead measure its own audio input, which is
-right in the standalone and usually wrong in a plugin — the GUI says so.
+One microphone drives every instance in the session, which is what a live rig with several
+processing chains wants anyway. A plugin can measure its own audio input instead, which is
+right in the standalone and usually wrong in a plugin, and the GUI tells you so.
 
 ### Level inputs
 
@@ -99,7 +99,7 @@ right in the standalone and usually wrong in a plugin — the GUI says so.
 | Datalogger CSV | Parser tested, including European separators |
 | 10EaZy | **Not implemented** — see `docs/meters.md` |
 
-The generic protocol is deliberately trivial so that any meter can drive it. One reading per
+The generic protocol is kept trivial on purpose, so any meter can drive it. One reading per
 UDP datagram, as text:
 
 ```
@@ -158,8 +158,8 @@ macOS builds are signed and notarised and open normally. The Windows builds are 
 
 <!-- downloads:end -->
 
-macOS artefacts are **Developer ID-signed and notarised by Apple**, so Gatekeeper
-lets them through and a DAW's plugin scan accepts them — no quarantine step.
+macOS artefacts are **Developer ID-signed and notarised by Apple**, so Gatekeeper lets them
+through and a DAW's plugin scan accepts them, with no quarantine step.
 
 ## Building
 
@@ -175,40 +175,41 @@ ctest --test-dir build --output-on-failure
 
 ## Safety
 
-This thing sits across a live output and changes it based on a microphone that is listening
-to that same output. That is a closed loop, and the design takes it seriously:
+This thing sits across a live output and changes it based on a microphone that's listening
+to that same output. That's a closed loop, and it's built like one:
 
 - **The loop is negative feedback.** More boost raises the measured level, which reduces the
   demanded boost. It converges rather than running away, and `tests/test_controller.cpp`
   simulates it across a range of acoustic couplings to show that it does.
 - **Rate limited.** The curve moves no faster than 0.5 dB/s by default, including on the
   very first measurement. Audible EQ movement is worse than slightly stale compensation.
-- **Hard ceiling.** No point on the curve can exceed the configured maximum, and limiting
+- **Hard ceiling.** No point on the curve can go past the configured maximum, and limiting
   scales the curve rather than clipping it, so its shape survives.
-- **Bounded tracking range.** An unplugged microphone reads as a very quiet room; without a
-  limit that becomes a demand for maximum boost.
-- **Fails to flat.** If the level stops arriving, the curve holds, then releases to flat —
-  the sound the system was tuned for.
+- **Bounded tracking range.** An unplugged microphone reads as a very quiet room, and
+  without a limit that turns into a demand for maximum boost.
+- **Fails to flat.** If the level stops arriving, the curve holds, then releases to flat,
+  which is the sound the system was tuned for.
 
 ## Known limits
 
 - **ISO 226:2003 is validated from 20 to 90 phon** (80 phon above 5 kHz), and live sound
-  operates above that. Strict conformance means no compensation at show level, so the
+  runs above that. Strict conformance would mean no compensation at show level, so the
   default extrapolates beyond the validated range and says so, in the GUI and in the API.
   Set `Extend past ISO 226` off for strict behaviour.
 - **The contours are for pure tones in a free field**, and programme material is neither.
   Treating a measured broadband level as a loudness level is the approximation every
-  loudness control has made since Fletcher and Munson, but it is an approximation. A full
-  loudness model (ISO 532) would be more correct and is not implemented.
+  loudness control has made since Fletcher and Munson, but it's still an approximation. A
+  full loudness model (ISO 532) would be more correct and isn't implemented.
 - **The filter bank fits the curve to about 0.44 dB** worst case at the 12 dB ceiling, 0.19 dB
   at 6 dB, concentrated at 20 Hz and above 10 kHz. Measured, not assumed.
-- **The built-in weighting filters lose accuracy above 10 kHz** at 44.1/48 kHz — a matched
-  Z-transform aliases there. It costs 0.31 dB on a broadband A-weighted reading of pink
-  noise, which is irrelevant to the compensation and not irrelevant if you are logging the
-  number for compliance. Use a real meter for that, or run at 96 kHz. See `docs/weighting.md`.
-- **A-weighting is a poor control input** — it *is* an equal-loudness curve, so it applies
+- **The built-in weighting filters lose accuracy above 10 kHz** at 44.1/48 kHz, because a
+  matched Z-transform aliases there. It costs 0.31 dB on a broadband A-weighted reading of
+  pink noise, which doesn't matter for the compensation and matters quite a lot if you're
+  logging the number for compliance. Use a real meter for that, or run at 96 kHz. See
+  `docs/weighting.md`.
+- **A-weighting is a poor control input**: it *is* an equal-loudness curve, so it applies
   part of the correction twice. C is the default. Shows are still policed in dB(A), so the
-  standalone measures what you need and controls on what is correct.
+  standalone measures what you need and controls on what's correct.
 
 <!-- attributions:start -->
 This project is built on other people's work — see [ATTRIBUTIONS.md](ATTRIBUTIONS.md).
