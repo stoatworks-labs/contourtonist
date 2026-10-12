@@ -13,7 +13,7 @@ VST3, AU and Standalone from one target. It measures how loud the room is, looks
 ISO 226:2003 contours at that level and at a reference level, and applies the difference as
 a zero-latency minimum-phase EQ. As the show level moves, the curve moves with it.
 
-Public repo, MIT, ships a user-facing AI-assisted disclaimer in the README. Version 0.2.0.
+Public repo, MIT, ships a user-facing AI-assisted disclaimer in the README. Version 0.2.2.
 Never used on a real system.
 
 ## 2. The rules that matter most

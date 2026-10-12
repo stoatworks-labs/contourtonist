@@ -7,15 +7,16 @@ person and dated by when each thing was learned — that date is usually the use
 Cross-cutting notes that are not specific to this repo live in
 [fleet-notes](https://github.com/stoatworks-labs/fleet-notes).
 
-*Contourtonist — equal-loudness (ISO 226) compensation EQ tracking short-term LEQ. JUCE VST3/AU/Standalone. PUBLIC MIT, RELEASED v0.2.0 for macOS, Windows and Linux; used in REAPER, never in a live environment*
+*Contourtonist — equal-loudness (ISO 226) compensation EQ tracking short-term LEQ. JUCE VST3/AU/Standalone. PUBLIC MIT, RELEASED v0.2.2 for macOS, Windows and Linux; used in REAPER, never in a live environment*
 
 **Contourtonist** — equal-loudness compensation EQ for **live sound**. Started 2026-08-02.
-`~/Projects/contourtonist`, **PUBLIC MIT** at https://github.com/stoatworks-labs/contourtonist.
+`~/Projects/audio/contourtonist`, **PUBLIC MIT** at https://github.com/stoatworks-labs/contourtonist.
 **Released v0.1.0 on 2026-08-02 — macOS only** (dmg + multi-part pkg; the Parallels
-Windows guest build failed and was not held for). **v0.2.0 on 2026-08-18 is the
-current release** and carries macOS, Windows and Linux assets: the MSVC build was
+Windows guest build failed and was not held for). **v0.2.0 on 2026-08-18**
+carried macOS, Windows and Linux assets: the MSVC build was
 fixed by defining `_USE_MATH_DEFINES` at directory scope, and the macOS builds are
-now Developer ID signed and notarised. On the website, and video
+now Developer ID signed and notarised. **v0.2.2 on 2026-09-04 is the current release**
+(v0.2.1 only changed the Windows installer). On the website, and video
 **`KHg28Tmo9F8`** is live. **Instagram reel NOT done** — `make_social.py contourtonist`
 ran clean but produced no 9:16 and no caption entry; that is the one outstanding item.
 
