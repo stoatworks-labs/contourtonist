@@ -200,6 +200,18 @@ xattr -dr com.apple.quarantine "/Applications/Contourtonist.app"
 
 ---
 
+## Installing the plugins on Windows
+
+The installer puts the VST3 in `C:\Program Files\Common Files\VST3\`, which every VST3 host
+scans, and the standalone in `C:\Program Files\Contourtonist\`. From the `.zip`, copy
+`VST3\Contourtonist.vst3` into that VST3 folder yourself.
+
+The v0.2.2 installer and older put the VST3 in `C:\Program Files\Contourtonist\VST3\` instead,
+where no host looks. Move it across by hand, or run a newer installer, which clears that copy
+away.
+
+---
+
 ## Troubleshooting
 
 | Symptom | Cause |
