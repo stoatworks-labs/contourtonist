@@ -12,6 +12,8 @@
 Contourtonist is an equal-loudness compensation EQ that tracks the room. It comes as VST3, AU
 and standalone, built with JUCE.
 
+The [project page](https://stoatworks-labs.com/software/contourtonist/) has the downloads, the [user guide](https://stoatworks-labs.com/software/contourtonist/guide/), the video and a demo you can click around in the browser.
+
 It measures how loud the room actually is (from a calibrated measurement microphone, or from
 an SPL meter's live output) and applies the EQ curve that keeps the tonal balance the system
 was tuned for as the level moves. So when a noise limit pulls the show down 8 dB, the bass
